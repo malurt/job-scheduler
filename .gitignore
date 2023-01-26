@@ -48,3 +48,5 @@ yarn.lock
 .scannerwork
 
 helm/environment/*
+
+uploads
