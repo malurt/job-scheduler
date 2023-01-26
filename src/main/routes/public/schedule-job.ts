@@ -1,7 +1,6 @@
 import { Route } from '@/infra/http/utils/http-server/types';
+import { makeScheduleJobController } from '@/main/factories/controllers';
 
 export default function (route: Route) {
-  route.post('/schedule', (_, res) => {
-    res.status(200).json({ message: 'The scheduling service is online!' });
-  });
+  route.post('/schedule', makeScheduleJobController());
 }
