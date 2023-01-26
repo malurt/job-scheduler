@@ -7,6 +7,14 @@ export class ScheduleJobController implements Controller {
     httpRequest: Controller.HttpRequest,
     [,]: Controller.State
   ): Controller.Result {
+    if (httpRequest.fileValidationError) {
+      return badRequest({
+        body: {
+          message: httpRequest.fileValidationError,
+          payload: {},
+        },
+      });
+    }
     return created(
       template(DICTIONARY.RESPONSE.MESSAGE.OK, 'Job scheduled'),
       {}
