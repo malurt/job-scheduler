@@ -3,6 +3,7 @@ import { fileUploaderAdapter } from '@/main/adapters';
 import { makeScheduleJobController } from '@/main/factories/controllers';
 
 const uploadOptions = {
+  inputName: 'file',
   filter: {
     filterEnabled: true,
     validTypes: ['text/javascript', 'application/javascript'],
@@ -15,7 +16,7 @@ const uploadOptions = {
 export default function (route: Route) {
   route.post(
     '/schedule',
-    fileUploaderAdapter(uploadOptions).single('file'),
+    fileUploaderAdapter(uploadOptions),
     makeScheduleJobController()
   );
 }
