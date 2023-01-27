@@ -1,53 +1,86 @@
 import { FileUploadOptions } from '@/main/protocols';
-import multer, { Multer } from 'multer';
+import { badRequest } from '@/presentation/utils';
+import { logger } from '@/util';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+import multer from 'multer';
 import path, { resolve } from 'node:path';
 
-export function fileUploaderAdapter(options: FileUploadOptions): Multer {
-  const repoPath = resolve(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    '..',
-    `${options.storage.folderName}`
-  );
-
-  const storage = multer.diskStorage({
-    destination: (_req, _file, callbackFun) => {
-      callbackFun(null, repoPath);
-    },
-    filename: (_req, file, callbackFun) => {
-      callbackFun(
-        null,
-        options.storage.keepOriginalFilename
-          ? Date.now() + file.originalname.trim().replaceAll(' ', '')
-          : Date.now().toString() + path.extname(file.originalname)
-      );
-    },
-  });
-
-  const multerUploaderMiddleware = (() => {
-    if (options.filter.filterEnabled) {
-      const filter = (req: any, file: any, cb: Function) => {
-        const isValidFile = options.filter.validTypes?.filter(
-          (validType) => file.mimetype === validType
+export function fileUploaderAdapter(
+  options: FileUploadOptions
+): RequestHandler {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const repoPath = resolve(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      '..',
+      `${options.storage.folderName}`
+    );
+    const storage = multer.diskStorage({
+      destination: (_req, _file, callbackFun) => {
+        callbackFun(null, repoPath);
+      },
+      filename: (_req, file, callbackFun) => {
+        callbackFun(
+          null,
+          options.storage.keepOriginalFilename
+            ? Date.now() + file.originalname.trim().replaceAll(' ', '')
+            : Date.now().toString() + path.extname(file.originalname)
         );
-
-        if (isValidFile?.length !== 0) {
-          cb(null, true);
-        } else {
-          req.fileValidationError = `Files of type ${file.mimetype} not allowed`;
-          return cb(
-            null,
-            false,
-            new Error(`Files of type ${file.mimetype} not allowed`)
+      },
+    });
+    const multerUploaderMiddleware = (() => {
+      if (options.filter.filterEnabled) {
+        const filter = (req: Request, file: any, cb: Function) => {
+          const isValidFile = options.filter.validTypes?.filter(
+            (validType) => file.mimetype === validType
           );
-        }
-      };
-      return multer({ storage, fileFilter: filter });
-    }
-    return multer({ storage });
-  })();
 
-  return multerUploaderMiddleware;
+          if (isValidFile?.length !== 0) {
+            cb(null, true);
+          } else {
+            req.fileValidationError = `Files of type ${file.mimetype} not allowed`;
+            return cb(
+              null,
+              false,
+              new Error(`Files of type ${file.mimetype} not allowed`)
+            );
+          }
+        };
+        return multer({ storage, fileFilter: filter });
+      }
+      return multer({ storage });
+    })();
+
+    const requestHandler = multerUploaderMiddleware.single(options.inputName);
+
+    requestHandler(req, res, (err) => {
+      const errorMessage = (() => {
+        if (err) {
+          return 'Unknown input name!';
+        }
+        if (req.fileValidationError) {
+          return req.fileValidationError;
+        }
+        if (!req.file) {
+          return 'No file found';
+        }
+        return undefined;
+      })();
+
+      if (errorMessage) {
+        const bad = badRequest({
+          body: {
+            message: errorMessage,
+            payload: {},
+          },
+        });
+
+        logger.log({ level: 'error', message: bad.body.error });
+        return res.status(bad.statusCode).json(bad.body);
+      }
+      return next();
+    });
+  };
 }
