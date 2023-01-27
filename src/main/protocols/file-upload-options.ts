@@ -6,6 +6,6 @@ export interface FileUploadOptions {
   };
   filter: {
     filterEnabled: boolean;
-    validTypes?: string[];
+    validExts?: string[];
   };
 }

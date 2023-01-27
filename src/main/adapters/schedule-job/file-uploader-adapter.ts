@@ -25,16 +25,21 @@ export function fileUploaderAdapter(
         callbackFun(
           null,
           options.storage.keepOriginalFilename
-            ? Date.now() + file.originalname.trim().replaceAll(' ', '')
-            : Date.now().toString() + path.extname(file.originalname)
+            ? Date.now() + file.originalname.replaceAll(' ', '').toLowerCase()
+            : Date.now().toString() +
+                path.extname(file.originalname).toLowerCase()
         );
       },
     });
     const multerUploaderMiddleware = (() => {
       if (options.filter.filterEnabled) {
         const filter = (req: Request, file: any, cb: Function) => {
-          const isValidFile = options.filter.validTypes?.filter(
-            (validType) => file.mimetype === validType
+          const fileChunks = file.originalname.split('.');
+          const originalFileExt =
+            fileChunks.length === 1 ? 'No extension found' : fileChunks.at(-1);
+          const isValidFile = options.filter.validExts?.filter(
+            (validExt) =>
+              originalFileExt.toUpperCase() === validExt.toUpperCase()
           );
 
           if (isValidFile?.length !== 0) {

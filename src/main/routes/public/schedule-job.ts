@@ -6,7 +6,7 @@ const uploadOptions = {
   inputName: 'file',
   filter: {
     filterEnabled: true,
-    validTypes: ['text/javascript', 'application/javascript'],
+    validExts: ['js'],
   },
   storage: {
     folderName: 'uploads',
