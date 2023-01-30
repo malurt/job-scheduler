@@ -10,6 +10,11 @@ import {
   subDays as dateFnsSubDays,
 } from 'date-fns';
 
+export const convertToTimestamp = (
+  _originalExpression: string,
+  _originalExpressionType: number
+) => 'convertedString';
+
 export const convertUnixToDate = (unixTime: number): Date => {
   return fromUnixTime(unixTime);
 };
