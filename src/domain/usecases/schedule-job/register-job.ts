@@ -12,5 +12,8 @@ export namespace RegisterJob {
     jobType: keyof typeof JOB_TYPES;
   };
   export type Result = Promise<Wrapper<void>>;
-  export enum Exceptions {}
+  export enum Exceptions {
+    INVALID_EXECUTION_RULE_FORMAT = 'Invalid executionRule format! Try using yyyy-mm-dd hh:MM:ss or a cron patters',
+    INVALID_EXECUTION_DATE = 'Invalid executionRule date! Execution must happen in a future date',
+  }
 }
