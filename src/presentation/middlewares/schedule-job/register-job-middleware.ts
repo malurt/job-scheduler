@@ -17,9 +17,14 @@ export class RegisterJobMiddleware implements Middleware {
   ): Middleware.Result {
     try {
       const { executionRule } = httpRequest.body;
+      const jobType = httpRequest.body.jobType.toUpperCase();
       const filename = httpRequest.file?.filename ?? 'maria';
 
-      await this.registerJob.register({ executionRule, filename });
+      await this.registerJob.register({
+        executionRule,
+        filename,
+        jobType,
+      });
 
       this.logger.log({
         level: 'info',
