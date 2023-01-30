@@ -8,7 +8,7 @@ export namespace RegisterJobRepository {
   export type Params = {
     filepath: string;
     executionRule: string;
-    taskNextExecution: string;
+    taskNextExecution: number;
     taskType: number;
   };
 

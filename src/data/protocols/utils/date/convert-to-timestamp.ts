@@ -1,4 +1,1 @@
-export type ConvertToTimestamp = (
-  originalExpression: string,
-  originalExpressionType: number
-) => string;
+export type ConvertToTimestamp = (originalExpression: string) => number;

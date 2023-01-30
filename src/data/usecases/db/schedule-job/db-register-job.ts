@@ -12,10 +12,7 @@ export class DbRegisterJob implements RegisterJob {
   async register(jobData: RegisterJob.Params): RegisterJob.Result {
     const taskType = JOB_TYPES[jobData.jobType];
 
-    const taskNextExecution = this.convertToTimestamp(
-      jobData.executionRule,
-      taskType
-    );
+    const taskNextExecution = this.convertToTimestamp(jobData.executionRule);
 
     const task = {
       filepath: jobData.filename,
