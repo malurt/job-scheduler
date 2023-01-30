@@ -1,7 +1,7 @@
 import { Logger } from '@/data/protocols/utils';
 import { ErrorHandler, RegisterJob } from '@/domain/usecases';
 import { Middleware } from '@/presentation/protocols/middleware';
-import { serverError } from '@/presentation/utils';
+import { badRequest, serverError } from '@/presentation/utils';
 
 export class RegisterJobMiddleware implements Middleware {
   constructor(
@@ -35,6 +35,11 @@ export class RegisterJobMiddleware implements Middleware {
     } catch (error) {
       await this.errorHandler.handle(error);
       switch (error.message) {
+        case RegisterJob.Exceptions.INVALID_EXECUTION_DATE:
+          return badRequest({
+            message: error.message,
+            payload: {},
+          });
         default:
           return serverError(error);
       }

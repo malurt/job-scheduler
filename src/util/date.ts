@@ -12,8 +12,25 @@ import {
 
 export const convertToTimestamp = (originalExpression: string) => {
   const currentTimestamp = convertDateToUnix(new Date());
+  const jobExecutionTimestamp = convertDateToUnix(new Date(originalExpression));
+
+  if (isTimestamp(jobExecutionTimestamp)) {
+    // Valid timestamp (valid date format )
+
+    if (dateIsAfter(currentTimestamp, jobExecutionTimestamp)) {
+      // Invalid Date - The first date is after the second one?
+      throw new Error(
+        'Invalid executionRule date! Execution must happen in a future date'
+      );
+    }
+    return jobExecutionTimestamp;
+  }
+  // Not an date, possibly a cron or an invalid value
   return currentTimestamp;
 };
+
+const isTimestamp = (possibleTimestamp: number) =>
+  !Number.isNaN(possibleTimestamp);
 
 export const convertUnixToDate = (unixTime: number): Date => {
   return fromUnixTime(unixTime);
