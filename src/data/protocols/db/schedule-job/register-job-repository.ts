@@ -8,8 +8,8 @@ export namespace RegisterJobRepository {
   export type Params = {
     filepath: string;
     executionRule: string;
-    taskNextExecution: number;
-    taskType: number;
+    jobNextExecution: number;
+    jobType: number;
   };
 
   export type Result = Promise<Wrapper<void>>;
