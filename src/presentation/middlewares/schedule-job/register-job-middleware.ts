@@ -40,6 +40,11 @@ export class RegisterJobMiddleware implements Middleware {
             message: error.message,
             payload: {},
           });
+        case RegisterJob.Exceptions.INVALID_EXECUTION_RULE_FORMAT:
+          return badRequest({
+            message: error.message,
+            payload: {},
+          });
         default:
           return serverError(error);
       }
