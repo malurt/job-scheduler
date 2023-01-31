@@ -13,7 +13,7 @@ export namespace RegisterJob {
   };
   export type Result = Promise<Wrapper<void>>;
   export enum Exceptions {
-    INVALID_EXECUTION_RULE_FORMAT = 'Invalid executionRule format! Try using yyyy-mm-dd hh:MM:ss or a cron patters',
+    INVALID_EXECUTION_RULE_FORMAT = 'Invalid executionRule format! Try using Brazilian date format (dd/mm/yyyy hh:MM) or cron pattern',
     INVALID_EXECUTION_DATE = 'Invalid executionRule date! Execution must happen in a future date',
   }
 }
