@@ -6,9 +6,9 @@ const builder = makeTableBuilder({
 });
 
 export const SCHEDULE_JOB_DB = {
-  JOBS: {
+  JOB: {
     JOB: builder({
-      table: '[jobs].[tb_job]',
+      table: '[job].[tb_job]',
       columns: <const>[
         'id_job',
         'job_external_id',
@@ -21,11 +21,11 @@ export const SCHEDULE_JOB_DB = {
       ],
     }),
     JOB_TYPE: builder({
-      table: '[jobs].[tb_job_type]',
+      table: '[job].[tb_job_type]',
       columns: <const>['id_job_type', 'job_type'],
     }),
     JOB_execution: builder({
-      table: '[jobs].[tb_job_execution]',
+      table: '[job].[tb_job_execution]',
       columns: <const>['id_job_execution', 'execution_datetime', 'id_job'],
     }),
   },
