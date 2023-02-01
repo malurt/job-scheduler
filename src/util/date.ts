@@ -19,25 +19,39 @@ export const convertToTimestamp = (originalExpression: string) => {
 
   const finalTimestamp = (() => {
     // check if its a date
-    if (INTERNATIONAL_DATE_FORMAT.test(originalExpression)) {
-      return convertDateToUnix(new Date(originalExpression));
-    }
-    if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression)) {
-      const dateParts = originalExpression.split(' ');
-      const [day, month, year] = dateParts[0]
-        .split('/')
-        .map((value) => Number(value));
-      const [hours, minutes] = dateParts[1]
-        .split(':')
-        .map((value) => Number(value));
+    const dateTimestamp = (() => {
+      if (INTERNATIONAL_DATE_FORMAT.test(originalExpression)) {
+        return convertDateToUnix(new Date(originalExpression));
+      }
+      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression)) {
+        const dateParts = originalExpression.split(' ');
+        const [day, month, year] = dateParts[0]
+          .split('/')
+          .map((value) => Number(value));
+        const [hours, minutes] = dateParts[1]
+          .split(':')
+          .map((value) => Number(value));
 
-      return convertDateToUnix(new Date(year, month - 1, day, hours, minutes));
-    }
+        return convertDateToUnix(
+          new Date(year, month - 1, day, hours, minutes)
+        );
+      }
+    })();
+    if (dateTimestamp)
+      return {
+        timestamp: dateTimestamp,
+        originalExpressionType: 'DATE' as const,
+      };
 
     // check if is a cron
     const cron = parser.parseString(originalExpression);
     if (cron.expressions.length >= 1) {
-      return convertDateToUnix(new Date(cron.expressions[0].next().toDate()));
+      return {
+        timestamp: convertDateToUnix(
+          new Date(cron.expressions[0].next().toDate())
+        ),
+        originalExpressionType: 'CRON' as const,
+      };
     }
 
     throw new Error(
@@ -46,14 +60,17 @@ export const convertToTimestamp = (originalExpression: string) => {
   })();
 
   const currentTimestamp = convertDateToUnix(new Date());
-  if (dateIsAfter(currentTimestamp, finalTimestamp)) {
+  if (dateIsAfter(currentTimestamp, finalTimestamp.timestamp)) {
     // Invalid Date - The first date is after the second one?
     throw new Error(
       'Invalid executionRule date! Execution must happen in a future date'
     );
   }
 
-  return finalTimestamp;
+  return {
+    timestamp: finalTimestamp.timestamp,
+    originalExpressionType: finalTimestamp.originalExpressionType,
+  };
 };
 
 export const convertUnixToDate = (unixTime: number): Date => {

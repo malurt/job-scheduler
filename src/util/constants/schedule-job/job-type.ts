@@ -1,4 +1,4 @@
 export const JOB_TYPES = {
-  INTERVAL: 1,
-  SPECIFIC: 2,
+  CRON: 1,
+  DATE: 2,
 };

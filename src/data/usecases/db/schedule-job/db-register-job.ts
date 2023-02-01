@@ -10,9 +10,9 @@ export class DbRegisterJob implements RegisterJob {
   ) {}
 
   async register(jobData: RegisterJob.Params): RegisterJob.Result {
-    const idJobType = JOB_TYPES[jobData.jobType];
-
-    const jobNextExecution = this.convertToTimestamp(jobData.executionRule);
+    const timestampResult = this.convertToTimestamp(jobData.executionRule);
+    const jobNextExecution = timestampResult.timestamp;
+    const idJobType = JOB_TYPES[timestampResult.originalExpressionType];
 
     const job = {
       jobFilepath: jobData.filename,
