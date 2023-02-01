@@ -6,10 +6,10 @@ export interface RegisterJobRepository {
 
 export namespace RegisterJobRepository {
   export type Params = {
-    filepath: string;
-    executionRule: string;
+    jobFilepath: string;
+    jobExecutionRule: string;
     jobNextExecution: number;
-    jobType: number;
+    idJobType: number;
   };
 
   export type Result = Promise<Wrapper<void>>;
