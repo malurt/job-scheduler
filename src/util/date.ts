@@ -1,4 +1,3 @@
-import parser from 'cron-parser';
 import {
   addBusinessDays,
   addDays,
@@ -10,68 +9,6 @@ import {
   subBusinessDays as dateFnsSubBusinessDays,
   subDays as dateFnsSubDays,
 } from 'date-fns';
-
-export const convertToTimestamp = (originalExpression: string) => {
-  const BRAZILIAN_DATE_TIME_FORMAT =
-    /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/gm;
-  const INTERNATIONAL_DATE_FORMAT =
-    /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]$/gm;
-
-  const finalTimestamp = (() => {
-    // check if its a date
-    const dateTimestamp = (() => {
-      if (INTERNATIONAL_DATE_FORMAT.test(originalExpression)) {
-        return convertDateToUnix(new Date(originalExpression));
-      }
-      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression)) {
-        const dateParts = originalExpression.split(' ');
-        const [day, month, year] = dateParts[0]
-          .split('/')
-          .map((value) => Number(value));
-        const [hours, minutes] = dateParts[1]
-          .split(':')
-          .map((value) => Number(value));
-
-        return convertDateToUnix(
-          new Date(year, month - 1, day, hours, minutes)
-        );
-      }
-    })();
-    if (dateTimestamp)
-      return {
-        timestamp: dateTimestamp,
-        originalExpressionType: 'DATE' as const,
-      };
-
-    // check if is a cron
-    const cron = parser.parseString(originalExpression);
-    if (cron.expressions.length >= 1) {
-      return {
-        timestamp: convertDateToUnix(
-          new Date(cron.expressions[0].next().toDate())
-        ),
-        originalExpressionType: 'CRON' as const,
-      };
-    }
-
-    throw new Error(
-      'Invalid executionRule format! Try using Brazilian date format (dd/mm/yyyy hh:MM) or cron pattern'
-    );
-  })();
-
-  const currentTimestamp = convertDateToUnix(new Date());
-  if (dateIsAfter(currentTimestamp, finalTimestamp.timestamp)) {
-    // Invalid Date - The first date is after the second one?
-    throw new Error(
-      'Invalid executionRule date! Execution must happen in a future date'
-    );
-  }
-
-  return {
-    timestamp: finalTimestamp.timestamp,
-    originalExpressionType: finalTimestamp.originalExpressionType,
-  };
-};
 
 export const convertUnixToDate = (unixTime: number): Date => {
   return fromUnixTime(unixTime);
