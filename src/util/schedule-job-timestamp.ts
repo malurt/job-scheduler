@@ -1,7 +1,6 @@
 import parser from 'cron-parser';
-import { isAfter as dateIsAfter } from 'date-fns';
 
-import {} from './date';
+import { isAfter as dateIsAfter } from './date';
 
 const BRAZILIAN_DATE_TIME_FORMAT =
   /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/gm;
