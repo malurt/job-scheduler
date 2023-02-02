@@ -1,4 +1,8 @@
-import { RegisterJobRepository } from '@/data/protocols/db';
+import {
+  RegisterJobRepository,
+  SearchNextJobsRepository,
+} from '@/data/protocols/db';
+import { JobToBeDone } from '@/domain/models';
 import { Repository, SCHEDULE_JOB_DB } from '@/infra/db/mssql/util';
 import { formateCamelCaseKeysForSnakeCase } from '@badass-team-code/formatted-cases-words';
 
@@ -8,7 +12,7 @@ const {
 
 export class JobMsSQLRepository
   extends Repository
-  implements RegisterJobRepository
+  implements RegisterJobRepository, SearchNextJobsRepository
 {
   async register(
     params: RegisterJobRepository.Params
@@ -23,5 +27,21 @@ export class JobMsSQLRepository
       record,
       transaction: this.transactionAdapter(connection),
     };
+  }
+
+  async search(
+    _currentDate: SearchNextJobsRepository.Params
+  ): SearchNextJobsRepository.Result {
+    return new Promise<JobToBeDone[]>((resolve, _reject) => {
+      resolve([
+        {
+          jobNextExecution: 1,
+          IdJob: 1,
+          IdJobType: 1,
+          jobFilepath: 'string',
+          jobExecutionRule: 'string',
+        },
+      ]);
+    });
   }
 }

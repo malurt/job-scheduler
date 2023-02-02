@@ -1,1 +1,5 @@
-export type SharedState = {};
+import { JobToBeDone } from '@/domain/models';
+
+export type SharedState = {
+  searchNextJobs: { jobsToBeDone: JobToBeDone[] };
+};
