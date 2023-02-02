@@ -2,8 +2,8 @@ import {
   RegisterJobRepository,
   SearchNextJobsRepository,
 } from '@/data/protocols/db';
-import { JobToBeDone } from '@/domain/models';
 import { Repository, SCHEDULE_JOB_DB } from '@/infra/db/mssql/util';
+import { sumMinutes } from '@/util';
 import { formateCamelCaseKeysForSnakeCase } from '@badass-team-code/formatted-cases-words';
 
 const {
@@ -30,18 +30,15 @@ export class JobMsSQLRepository
   }
 
   async search(
-    _currentDate: SearchNextJobsRepository.Params
+    currentDate: SearchNextJobsRepository.Params
   ): SearchNextJobsRepository.Result {
-    return new Promise<JobToBeDone[]>((resolve, _reject) => {
-      resolve([
-        {
-          jobNextExecution: 1,
-          IdJob: 1,
-          IdJobType: 1,
-          jobFilepath: 'string',
-          jobExecutionRule: 'string',
-        },
-      ]);
-    });
+    const from = currentDate;
+    const to = sumMinutes(currentDate, 2);
+
+    const jobs = await this.connection(JOB.TABLE)
+      .select('*')
+      .whereBetween(JOB.COLUMNS.JOB_NEXT_EXECUTION, [from, to]);
+
+    return jobs;
   }
 }
