@@ -7,11 +7,11 @@ const BRAZILIAN_DATE_TIME_FORMAT =
 const INTERNATIONAL_DATE_FORMAT =
   /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]$/;
 
-export const convertToTimestamp = (originalExpression: string) => {
-  // get a timestamp
-  const finalTimestamp = (() => {
+export const getJobExecutionData = (originalExpression: string) => {
+  // get a date
+  const finalDate = (() => {
     // check if its a date
-    const timestampFromDate = (() => {
+    const dateFromDateString = (() => {
       if (INTERNATIONAL_DATE_FORMAT.test(originalExpression))
         return new Date(originalExpression);
 
@@ -19,9 +19,9 @@ export const convertToTimestamp = (originalExpression: string) => {
         return getDateFromBrazilianString(originalExpression);
     })();
 
-    if (timestampFromDate)
+    if (dateFromDateString)
       return {
-        timestamp: timestampFromDate,
+        date: dateFromDateString,
         originalExpressionType: 'DATE' as const,
       };
 
@@ -30,7 +30,7 @@ export const convertToTimestamp = (originalExpression: string) => {
 
     if (cron)
       return {
-        timestamp: cron.next().toDate(),
+        date: cron.next().toDate(),
         originalExpressionType: 'CRON' as const,
       };
 
@@ -41,16 +41,16 @@ export const convertToTimestamp = (originalExpression: string) => {
   })();
 
   // verify if it's a future date
-  const currentTimestamp = new Date();
-  if (dateIsAfter(currentTimestamp, finalTimestamp.timestamp))
+  const currentDate = new Date();
+  if (dateIsAfter(currentDate, finalDate.date))
     // Invalid Date - The first date is after the second one?
     throw new Error(
       'Invalid executionRule date! Execution must happen in a future date'
     );
 
   return {
-    timestamp: finalTimestamp.timestamp,
-    originalExpressionType: finalTimestamp.originalExpressionType,
+    nextExecution: finalDate.date,
+    originalExpressionType: finalDate.originalExpressionType,
   };
 };
 

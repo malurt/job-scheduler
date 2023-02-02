@@ -1,18 +1,18 @@
 import { RegisterJobRepository } from '@/data/protocols/db';
-import { ConvertToTimestamp } from '@/data/protocols/utils';
+import { GetJobExecutionData } from '@/data/protocols/utils';
 import { RegisterJob } from '@/domain/usecases';
 import { JOB_TYPES } from '@/util';
 
 export class DbRegisterJob implements RegisterJob {
   constructor(
-    private readonly convertToTimestamp: ConvertToTimestamp,
+    private readonly getJobExecutionData: GetJobExecutionData,
     private readonly registerJobRepository: RegisterJobRepository
   ) {}
 
   async register(jobData: RegisterJob.Params): RegisterJob.Result {
-    const timestampResult = this.convertToTimestamp(jobData.executionRule);
-    const jobNextExecution = timestampResult.timestamp;
-    const idJobType = JOB_TYPES[timestampResult.originalExpressionType];
+    const executionData = this.getJobExecutionData(jobData.executionRule);
+    const jobNextExecution = executionData.nextExecution;
+    const idJobType = JOB_TYPES[executionData.originalExpressionType];
 
     const job = {
       jobFilepath: jobData.filename,

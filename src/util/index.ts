@@ -9,4 +9,4 @@ export * from './text';
 export * from './uuid';
 export * from './comparation';
 export * from './transaction';
-export * from './schedule-job-timestamp';
+export * from './job-execution';
