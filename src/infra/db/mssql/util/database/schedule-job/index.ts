@@ -24,7 +24,7 @@ export const SCHEDULE_JOB_DB = {
       table: '[job].[tb_job_type]',
       columns: <const>['id_job_type', 'job_type'],
     }),
-    JOB_execution: builder({
+    JOB_EXECUTION: builder({
       table: '[job].[tb_job_execution]',
       columns: <const>['id_job_execution', 'execution_datetime', 'id_job'],
     }),
