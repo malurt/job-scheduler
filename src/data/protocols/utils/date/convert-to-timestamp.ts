@@ -1,4 +1,4 @@
 export type ConvertToTimestamp = (originalExpression: string) => {
-  timestamp: number;
+  timestamp: Date;
   originalExpressionType: 'CRON' | 'DATE';
 };

@@ -1,7 +1,7 @@
 import parser from 'cron-parser';
 import { isAfter as dateIsAfter } from 'date-fns';
 
-import { convertDateToUnix } from './date';
+import {} from './date';
 
 const BRAZILIAN_DATE_TIME_FORMAT =
   /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/gm;
@@ -14,12 +14,11 @@ export const convertToTimestamp = (originalExpression: string) => {
     // check if its a date
     const timestampFromDate = (() => {
       if (INTERNATIONAL_DATE_FORMAT.test(originalExpression))
-        return convertDateToUnix(new Date(originalExpression));
+        return new Date(originalExpression);
 
-      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression))
-        return convertDateToUnix(
-          getDateFromBrazilianString(originalExpression)
-        );
+      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression)) {
+        return getDateFromBrazilianString(originalExpression);
+      }
     })();
     if (timestampFromDate)
       return {
@@ -32,7 +31,7 @@ export const convertToTimestamp = (originalExpression: string) => {
 
     if (cron)
       return {
-        timestamp: convertDateToUnix(cron.next().toDate()),
+        timestamp: cron.next().toDate(),
         originalExpressionType: 'CRON' as const,
       };
 
@@ -43,7 +42,7 @@ export const convertToTimestamp = (originalExpression: string) => {
   })();
 
   // verify if it's a future date
-  const currentTimestamp = convertDateToUnix(new Date());
+  const currentTimestamp = new Date();
   if (dateIsAfter(currentTimestamp, finalTimestamp.timestamp))
     // Invalid Date - The first date is after the second one?
     throw new Error(
