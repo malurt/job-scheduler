@@ -3,9 +3,9 @@ import parser from 'cron-parser';
 import { isAfter as dateIsAfter } from './date';
 
 const BRAZILIAN_DATE_TIME_FORMAT =
-  /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/gm;
+  /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/;
 const INTERNATIONAL_DATE_FORMAT =
-  /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]$/gm;
+  /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]$/;
 
 export const convertToTimestamp = (originalExpression: string) => {
   // get a timestamp
@@ -15,10 +15,10 @@ export const convertToTimestamp = (originalExpression: string) => {
       if (INTERNATIONAL_DATE_FORMAT.test(originalExpression))
         return new Date(originalExpression);
 
-      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression)) {
+      if (BRAZILIAN_DATE_TIME_FORMAT.test(originalExpression))
         return getDateFromBrazilianString(originalExpression);
-      }
     })();
+
     if (timestampFromDate)
       return {
         timestamp: timestampFromDate,
