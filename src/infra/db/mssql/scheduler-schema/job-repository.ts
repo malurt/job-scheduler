@@ -44,7 +44,8 @@ export class JobMsSQLRepository
 
     const jobs = await this.connection(JOB.TABLE)
       .select('*')
-      .whereBetween(JOB.COLUMNS.JOB_NEXT_EXECUTION, [from, to]);
+      .whereBetween(JOB.COLUMNS.JOB_NEXT_EXECUTION, [from, to])
+      .andWhere(JOB.COLUMNS.JOB_FINISHED, 0);
 
     return convertSnakeCaseKeysToCamelCase(jobs);
   }
