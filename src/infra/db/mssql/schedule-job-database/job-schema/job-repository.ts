@@ -10,7 +10,7 @@ import { convertSnakeCaseKeysToCamelCase, sumMinutes } from '@/util';
 import { formateCamelCaseKeysForSnakeCase } from '@badass-team-code/formatted-cases-words';
 
 const {
-  JOB: { JOB },
+  JOB: { JOB, JOB_EXECUTION },
 } = SCHEDULE_JOB_DB;
 
 export class JobMsSQLRepository
@@ -60,5 +60,20 @@ export class JobMsSQLRepository
     executedJobData: RegisterJobExecutionRepository.Params
   ): RegisterJobExecutionRepository.Result {
     console.log('Registering execution of job', executedJobData.idJob);
+    const connection = await this.getConnection();
+
+    const executionData = (({ executionDatetime, idJob }) => ({
+      executionDatetime,
+      idJob,
+    }))(executedJobData);
+
+    await connection(JOB_EXECUTION.TABLE)
+      .insert(formateCamelCaseKeysForSnakeCase(executionData))
+      .returning('*');
+
+    if (executedJobData.jobFinished)
+      await connection(JOB.TABLE)
+        .where(JOB.COLUMNS.ID_JOB, executedJobData.idJob)
+        .update(JOB.COLUMNS.JOB_FINISHED, executedJobData.jobFinished);
   }
 }
