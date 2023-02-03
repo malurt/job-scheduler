@@ -1,7 +1,7 @@
 export interface JobToBeDone {
   jobNextExecution: number;
-  IdJob: number;
-  IdJobType: number;
+  idJob: number;
+  idJobType: number;
   jobFilepath: string;
   jobExecutionRule: string;
 }
