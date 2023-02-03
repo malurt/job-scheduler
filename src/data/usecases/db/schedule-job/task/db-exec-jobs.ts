@@ -15,16 +15,18 @@ export class DbExecJob implements ExecJob {
       // Exec job
 
       // Register job execution
+      const jobFinished = job.idJobType === 2; // Is the job specific(2)? If so, it's already finished. If not, it is recurring and has not been finished
       await this.registerJobExecutionRepository.registerExecution({
         executionDatetime: new Date(),
         idJob: job.idJob,
-        jobFinished: false,
+        jobFinished,
       });
-      // Register job next execution
-      await this.registerJobNextExecutionRepository.registerNext({
-        jobNextExecution: new Date(),
-        idJob: job.idJob,
-      });
+      // Register job next execution (if necessary)
+      if (!jobFinished)
+        await this.registerJobNextExecutionRepository.registerNext({
+          jobNextExecution: new Date(),
+          idJob: job.idJob,
+        });
     });
   }
 }
