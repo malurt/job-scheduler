@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   RegisterJobExecutionRepository,
   RegisterJobNextExecutionRepository,
@@ -60,7 +59,6 @@ export class JobMsSQLRepository
   async registerNext(
     nextExecutionData: RegisterJobNextExecutionRepository.Params
   ): RegisterJobNextExecutionRepository.Result {
-    console.log('Registering next execution of job', nextExecutionData.idJob);
     const connection = await this.getConnection();
 
     await connection(JOB.TABLE)
@@ -74,7 +72,6 @@ export class JobMsSQLRepository
   async registerExecution(
     executedJobData: RegisterJobExecutionRepository.Params
   ): RegisterJobExecutionRepository.Result {
-    console.log('Registering execution of job', executedJobData.idJob);
     const connection = await this.getConnection();
 
     const executionData = (({ executionDatetime, idJob }) => ({
