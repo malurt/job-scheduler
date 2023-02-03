@@ -10,10 +10,12 @@ export class ExecJobsTask implements Task {
   ) {}
   async handle([state]: Task.State, next: Task.Next): Task.Result {
     try {
-      await this.execJob.exec(state.searchNextJobs.jobsToBeDone);
+      const { jobsToBeDone } = state.searchNextJobs;
+
+      if (jobsToBeDone.length >= 1) await this.execJob.exec(jobsToBeDone);
       this.logger.log({
         level: 'info',
-        message: "Hello! I'm supposed to exec the jobs!!! :)",
+        message: `Total of ${jobsToBeDone.length} job(s) executed!`,
       });
 
       next();
