@@ -1,1 +1,1 @@
-export * from './start-jobs-task';
+export * from './manage-jobs-task';

@@ -4,7 +4,7 @@ import { makeExecJobsTask } from '@/main/factories/tasks/schedule-job/make-exec-
 
 import { Options } from '../../protocols';
 
-export const searchNextJobsTask: Options = {
+export const manageJobsTask: Options = {
   enabled: true,
   cron: '0/10 * * * * *',
   handler: taskAdapter(makeSearchNextJobsTask(), makeExecJobsTask()),
