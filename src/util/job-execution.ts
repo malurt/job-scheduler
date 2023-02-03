@@ -26,11 +26,11 @@ export const getJobExecutionData = (originalExpression: string) => {
       };
 
     // check if is a cron
-    const [cron] = parser.parseString(originalExpression).expressions;
+    const cronDate = getCronNextExecutionDate(originalExpression);
 
-    if (cron)
+    if (cronDate)
       return {
-        date: cron.next().toDate(),
+        date: cronDate,
         originalExpressionType: 'CRON' as const,
       };
 
@@ -63,4 +63,10 @@ const getDateFromBrazilianString = (brazilianDateString: string) => {
     .split(':')
     .map((value) => Number(value));
   return new Date(year, month - 1, day, hours, minutes);
+};
+
+export const getCronNextExecutionDate = (cron: string) => {
+  const [generatedCron] = parser.parseString(cron).expressions;
+
+  if (generatedCron) return generatedCron.next().toDate();
 };
