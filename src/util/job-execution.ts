@@ -1,4 +1,4 @@
-import parser from 'cron-parser';
+import parser, { CronExpression } from 'cron-parser';
 
 import { isAfter as dateIsAfter } from './date';
 
@@ -26,11 +26,11 @@ export const getJobExecutionData = (originalExpression: string) => {
       };
 
     // check if is a cron
-    const cronDate = getCronNextExecutionDate(originalExpression);
+    const generatedCron = getCronExpressionFromString(originalExpression);
 
-    if (cronDate)
+    if (generatedCron)
       return {
-        date: cronDate,
+        date: getCronNextExecutionDate(generatedCron),
         originalExpressionType: 'CRON' as const,
       };
 
@@ -65,8 +65,10 @@ const getDateFromBrazilianString = (brazilianDateString: string) => {
   return new Date(year, month - 1, day, hours, minutes);
 };
 
-export const getCronNextExecutionDate = (cron: string) => {
-  const [generatedCron] = parser.parseString(cron).expressions;
+export const getCronNextExecutionDate = (cron: CronExpression) => {
+  return cron.next().toDate();
+};
 
-  if (generatedCron) return generatedCron.next().toDate();
+export const getCronExpressionFromString = (cronStr: string) => {
+  return parser.parseString(cronStr).expressions[0];
 };
