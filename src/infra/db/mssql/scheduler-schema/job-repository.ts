@@ -1,9 +1,12 @@
+/* eslint-disable no-console */
 import {
+  RegisterJobExecutionRepository,
+  RegisterJobNextExecutionRepository,
   RegisterJobRepository,
   SearchNextJobsRepository,
 } from '@/data/protocols/db';
 import { Repository, SCHEDULE_JOB_DB } from '@/infra/db/mssql/util';
-import { sumMinutes } from '@/util';
+import { convertSnakeCaseKeysToCamelCase, sumMinutes } from '@/util';
 import { formateCamelCaseKeysForSnakeCase } from '@badass-team-code/formatted-cases-words';
 
 const {
@@ -12,7 +15,11 @@ const {
 
 export class JobMsSQLRepository
   extends Repository
-  implements RegisterJobRepository, SearchNextJobsRepository
+  implements
+    RegisterJobRepository,
+    SearchNextJobsRepository,
+    RegisterJobExecutionRepository,
+    RegisterJobNextExecutionRepository
 {
   async register(
     params: RegisterJobRepository.Params
@@ -39,6 +46,18 @@ export class JobMsSQLRepository
       .select('*')
       .whereBetween(JOB.COLUMNS.JOB_NEXT_EXECUTION, [from, to]);
 
-    return jobs;
+    return convertSnakeCaseKeysToCamelCase(jobs);
+  }
+
+  async registerNext(
+    nextExecutionData: RegisterJobNextExecutionRepository.Params
+  ): RegisterJobNextExecutionRepository.Result {
+    console.log('Registering next execution of job', nextExecutionData.idJob);
+  }
+
+  async registerExecution(
+    executedJobData: RegisterJobExecutionRepository.Params
+  ): RegisterJobExecutionRepository.Result {
+    console.log('Registering execution of job', executedJobData.idJob);
   }
 }
