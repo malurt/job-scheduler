@@ -1,5 +1,5 @@
 import { DbRegisterJob } from '@/data/usecases/db/schedule-job/db-register-job';
-import { JobMsSQLRepository } from '@/infra/db/mssql/scheduler-schema';
+import { JobMsSQLRepository } from '@/infra/db/mssql/schedule-job-database';
 import { RegisterJobMiddleware } from '@/presentation/middlewares';
 import { getJobExecutionData, logger, rollbackAll } from '@/util';
 
