@@ -6,6 +6,6 @@ import { Options } from '../../protocols';
 
 export const manageJobsTask: Options = {
   enabled: true,
-  cron: '0/10 * * * * *',
+  cron: '* * * * *',
   handler: taskAdapter(makeSearchNextJobsTask(), makeExecJobsTask()),
 };

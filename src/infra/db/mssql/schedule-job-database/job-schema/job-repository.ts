@@ -39,8 +39,15 @@ export class JobMsSQLRepository
   async search(
     currentDate: SearchNextJobsRepository.Params
   ): SearchNextJobsRepository.Result {
-    const from = currentDate;
-    const to = sumMinutes(currentDate, 2);
+    // Disconsider seconds and milliseconds
+    const from = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getUTCDate(),
+      currentDate.getHours(),
+      currentDate.getMinutes()
+    );
+    const to = sumMinutes(from, 1);
 
     const jobs = await this.connection(JOB.TABLE)
       .select('*')
@@ -54,6 +61,14 @@ export class JobMsSQLRepository
     nextExecutionData: RegisterJobNextExecutionRepository.Params
   ): RegisterJobNextExecutionRepository.Result {
     console.log('Registering next execution of job', nextExecutionData.idJob);
+    const connection = await this.getConnection();
+
+    await connection(JOB.TABLE)
+      .where(JOB.COLUMNS.ID_JOB, nextExecutionData.idJob)
+      .update(
+        JOB.COLUMNS.JOB_NEXT_EXECUTION,
+        nextExecutionData.jobNextExecution
+      );
   }
 
   async registerExecution(

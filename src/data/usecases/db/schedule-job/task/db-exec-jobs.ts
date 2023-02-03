@@ -2,12 +2,18 @@ import {
   RegisterJobExecutionRepository,
   RegisterJobNextExecutionRepository,
 } from '@/data/protocols/db';
+import {
+  GetCronExpression,
+  GetCronNextExecution,
+} from '@/data/protocols/utils';
 import { ExecJob } from '@/domain/usecases';
 
 export class DbExecJob implements ExecJob {
   constructor(
     private readonly registerJobExecutionRepository: RegisterJobExecutionRepository,
-    private readonly registerJobNextExecutionRepository: RegisterJobNextExecutionRepository
+    private readonly registerJobNextExecutionRepository: RegisterJobNextExecutionRepository,
+    private readonly getCronExpression: GetCronExpression,
+    private readonly getCronNextExecution: GetCronNextExecution
   ) {}
 
   async exec(jobs: ExecJob.Params): ExecJob.Result {
@@ -22,11 +28,15 @@ export class DbExecJob implements ExecJob {
         jobFinished,
       });
       // Register job next execution (if necessary)
-      if (!jobFinished)
+      if (!jobFinished) {
+        const cron = this.getCronExpression(job.jobExecutionRule);
+        const nextDate = this.getCronNextExecution(cron);
+
         await this.registerJobNextExecutionRepository.registerNext({
-          jobNextExecution: new Date(),
+          jobNextExecution: nextDate,
           idJob: job.idJob,
         });
+      }
     });
   }
 }
