@@ -26,7 +26,12 @@ export class DbExecJob implements ExecJob {
       try {
         const filepath = resolve(
           __dirname,
-          '../../../../../../',
+          '..',
+          '..',
+          '..',
+          '..',
+          '..',
+          '..',
           'uploads',
           job.jobFilepath
         );
