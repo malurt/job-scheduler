@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 import {
+  RegisterJobExecutionFailureRepository,
   RegisterJobExecutionRepository,
   RegisterJobNextExecutionRepository,
 } from '@/data/protocols/db';
@@ -17,7 +18,8 @@ export class DbExecJob implements ExecJob {
     private readonly registerJobNextExecutionRepository: RegisterJobNextExecutionRepository,
     private readonly getCronExpression: GetCronExpression,
     private readonly getCronNextExecution: GetCronNextExecution,
-    private readonly executeJob: ExecuteJob
+    private readonly executeJob: ExecuteJob,
+    private readonly registerJobExecutionFailureRepository: RegisterJobExecutionFailureRepository
   ) {}
 
   async exec(jobs: ExecJob.Params): ExecJob.Result {
@@ -57,6 +59,10 @@ export class DbExecJob implements ExecJob {
       } catch (error) {
         console.log('ERROR => ', error);
         // TODO: Register execution failure on db
+        this.registerJobExecutionFailureRepository.registerFailure({
+          executionAttemptDatetime: new Date(),
+          idJob: job.idJob,
+        });
       }
     });
   }

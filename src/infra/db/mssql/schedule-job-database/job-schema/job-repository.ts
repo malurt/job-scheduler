@@ -1,4 +1,5 @@
 import {
+  RegisterJobExecutionFailureRepository,
   RegisterJobExecutionRepository,
   RegisterJobNextExecutionRepository,
   RegisterJobRepository,
@@ -18,7 +19,8 @@ export class JobMsSQLRepository
     RegisterJobRepository,
     SearchNextJobsRepository,
     RegisterJobExecutionRepository,
-    RegisterJobNextExecutionRepository
+    RegisterJobNextExecutionRepository,
+    RegisterJobExecutionFailureRepository
 {
   async register(
     params: RegisterJobRepository.Params
@@ -87,5 +89,12 @@ export class JobMsSQLRepository
       await connection(JOB.TABLE)
         .where(JOB.COLUMNS.ID_JOB, executedJobData.idJob)
         .update(JOB.COLUMNS.JOB_FINISHED, executedJobData.jobFinished);
+  }
+
+  async registerFailure(
+    executionData: RegisterJobExecutionFailureRepository.Params
+  ): RegisterJobExecutionFailureRepository.Result {
+    // eslint-disable-next-line no-console
+    console.log('Registrando Erro no banco', executionData);
   }
 }
