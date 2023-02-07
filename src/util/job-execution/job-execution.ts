@@ -1,8 +1,12 @@
 import { ExecutionResult } from '@/data/protocols/utils/job/execute-job';
 import { spawn } from 'child_process';
-import parser, { CronExpression } from 'cron-parser';
 
 import { isAfter as dateIsAfter } from '../date';
+import {
+  getCronExpressionFromString,
+  getCronNextExecutionDate,
+  getDateFromBrazilianString,
+} from './date';
 
 const BRAZILIAN_DATE_TIME_FORMAT =
   /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/;
@@ -73,23 +77,4 @@ export const getJobExecutionData = (originalExpression: string) => {
     nextExecution: finalDate.date,
     originalExpressionType: finalDate.originalExpressionType,
   };
-};
-
-const getDateFromBrazilianString = (brazilianDateString: string) => {
-  const dateAndTime = brazilianDateString.split(' ');
-  const [day, month, year] = dateAndTime[0]
-    .split('/')
-    .map((value) => Number(value));
-  const [hours, minutes] = dateAndTime[1]
-    .split(':')
-    .map((value) => Number(value));
-  return new Date(year, month - 1, day, hours, minutes);
-};
-
-export const getCronNextExecutionDate = (cron: CronExpression) => {
-  return cron.next().toDate();
-};
-
-export const getCronExpressionFromString = (cronStr: string) => {
-  return parser.parseString(cronStr).expressions[0];
 };
