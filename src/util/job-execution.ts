@@ -1,3 +1,5 @@
+import { ExecutionResult } from '@/data/protocols/utils/job/execute-job';
+import { spawn } from 'child_process';
 import parser, { CronExpression } from 'cron-parser';
 
 import { isAfter as dateIsAfter } from './date';
@@ -6,6 +8,25 @@ const BRAZILIAN_DATE_TIME_FORMAT =
   /^((([012][0-9])|(3[01]))\/([0]{0,1}[1-9]|1[012])\/\d\d\d\d) ([012]{0,1}[0-9]:[0-6][0-9])$/;
 const INTERNATIONAL_DATE_FORMAT =
   /^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1]) (2[0-3]|[01][0-9]):[0-5][0-9]$/;
+
+export const executeJob = async (
+  command: string,
+  args: string[]
+): Promise<ExecutionResult> => {
+  return new Promise(function (response, reject) {
+    const errors: string[] = [];
+    const process = spawn(command, args);
+    process.stderr.on('data', (data) => {
+      errors.push(data.toString());
+    });
+    process.on('close', (code) => {
+      if (code !== 0) reject(new Error(errors[0]));
+      response({
+        execCode: Number(code),
+      });
+    });
+  });
+};
 
 export const getJobExecutionData = (originalExpression: string) => {
   // get a date

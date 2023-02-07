@@ -3,6 +3,7 @@ import { JobMsSQLRepository } from '@/infra/db/mssql/schedule-job-database';
 import { ExecJobsTask } from '@/schedule';
 import { Task } from '@/schedule/protocols';
 import {
+  executeJob,
   getCronExpressionFromString,
   getCronNextExecutionDate,
   logger,
@@ -16,7 +17,8 @@ export const makeExecJobsTask = (): Task => {
     jobRepository,
     jobRepository,
     getCronExpressionFromString,
-    getCronNextExecutionDate
+    getCronNextExecutionDate,
+    executeJob
   );
   return new ExecJobsTask(logger, dbExecJob, makeErrorHandler());
 };
