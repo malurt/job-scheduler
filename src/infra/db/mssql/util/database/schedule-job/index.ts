@@ -30,7 +30,12 @@ export const SCHEDULE_JOB_DB = {
     }),
     JOB_EXECUTION: builder({
       table: '[job].[tb_job_execution]',
-      columns: <const>['id_job_execution', 'execution_datetime', 'id_job'],
+      columns: <const>[
+        'id_job_execution',
+        'execution_datetime',
+        'execution_console_output',
+        'id_job',
+      ],
     }),
   },
 };
