@@ -16,7 +16,7 @@ export const SCHEDULE_JOB_DB = {
         'job_filepath',
         'job_execution_rule',
         'job_next_execution',
-        'job_finished',
+        'id_job_status',
         'id_job_type',
       ],
     }),

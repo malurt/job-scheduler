@@ -7,6 +7,7 @@ import {
 } from '@/data/protocols/db';
 import { Repository, SCHEDULE_JOB_DB } from '@/infra/db/mssql/util';
 import { convertSnakeCaseKeysToCamelCase, sumMinutes } from '@/util';
+import { JOB_STATUS } from '@/util/constants';
 import { formateCamelCaseKeysForSnakeCase } from '@badass-team-code/formatted-cases-words';
 
 const {
@@ -53,7 +54,7 @@ export class JobMsSQLRepository
     const jobs = await this.connection(JOB.TABLE)
       .select('*')
       .whereBetween(JOB.COLUMNS.JOB_NEXT_EXECUTION, [from, to])
-      .andWhere(JOB.COLUMNS.JOB_FINISHED, 0);
+      .andWhere(JOB.COLUMNS.ID_JOB_STATUS, 1);
 
     return convertSnakeCaseKeysToCamelCase(jobs);
   }
@@ -85,10 +86,10 @@ export class JobMsSQLRepository
       .insert(formateCamelCaseKeysForSnakeCase(executionData))
       .returning('*');
 
-    if (executedJobData.jobFinished)
+    if (executedJobData.jobStatus !== JOB_STATUS.ACTIVE)
       await connection(JOB.TABLE)
         .where(JOB.COLUMNS.ID_JOB, executedJobData.idJob)
-        .update(JOB.COLUMNS.JOB_FINISHED, executedJobData.jobFinished);
+        .update(JOB.COLUMNS.ID_JOB_STATUS, executedJobData.jobStatus);
   }
 
   async registerFailure(

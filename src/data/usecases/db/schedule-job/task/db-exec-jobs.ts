@@ -10,6 +10,7 @@ import {
   GetCronNextExecution,
 } from '@/data/protocols/utils';
 import { ExecJob } from '@/domain/usecases';
+import { JOB_STATUS } from '@/util/constants';
 import { resolve } from 'path';
 
 export class DbExecJob implements ExecJob {
@@ -40,14 +41,15 @@ export class DbExecJob implements ExecJob {
         await this.executeJob('node', [filepath]);
 
         // Register job execution
-        const jobFinished = job.idJobType === 2; // Is the job specific(2)? If so, it's already finished. If not, it is recurring and has not been finished
+        const jobStatus =
+          job.idJobType === 2 ? JOB_STATUS.FINISHED : JOB_STATUS.ACTIVE; // Is the job specific(2)? If so, it's already finished. If not, it is recurring and has not been finished
         await this.registerJobExecutionRepository.registerExecution({
           executionDatetime: new Date(),
           idJob: job.idJob,
-          jobFinished,
+          jobStatus,
         });
         // Register job next execution (if necessary)
-        if (!jobFinished) {
+        if (jobStatus === JOB_STATUS.ACTIVE) {
           const cron = this.getCronExpression(job.jobExecutionRule);
           const nextDate = this.getCronNextExecution(cron);
 
