@@ -39,6 +39,7 @@ export const SCHEDULE_JOB_DB = {
         'execution_datetime',
         'execution_console_output',
         'id_job',
+        'id_execution_result',
       ],
     }),
   },

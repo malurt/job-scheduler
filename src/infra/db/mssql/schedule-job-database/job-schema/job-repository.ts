@@ -77,9 +77,14 @@ export class JobMsSQLRepository
   ): RegisterJobExecutionRepository.Result {
     const connection = await this.getConnection();
 
-    const executionData = (({ executionDatetime, idJob }) => ({
+    const executionData = (({
       executionDatetime,
       idJob,
+      idExecutionResult,
+    }) => ({
+      executionDatetime,
+      idJob,
+      idExecutionResult,
     }))(executedJobData);
 
     await connection(JOB_EXECUTION.TABLE)

@@ -10,7 +10,7 @@ import {
   GetCronNextExecution,
 } from '@/data/protocols/utils';
 import { ExecJob } from '@/domain/usecases';
-import { JOB_STATUS } from '@/util/constants';
+import { JOB_STATUS, EXECUTION_RESULT } from '@/util/constants';
 import { resolve } from 'path';
 
 export class DbExecJob implements ExecJob {
@@ -45,6 +45,7 @@ export class DbExecJob implements ExecJob {
           job.idJobType === 2 ? JOB_STATUS.FINISHED : JOB_STATUS.ACTIVE; // Is the job specific(2)? If so, it's already finished. If not, it is recurring and has not been finished
         await this.registerJobExecutionRepository.registerExecution({
           executionDatetime: new Date(),
+          idExecutionResult: EXECUTION_RESULT.SUCCEEDED,
           idJob: job.idJob,
           jobStatus,
         });
