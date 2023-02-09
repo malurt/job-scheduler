@@ -60,11 +60,15 @@ export class DbExecJob implements ExecJob {
           });
         }
       } catch (error) {
-        console.log('ERROR => ', error);
         // TODO: Register execution failure on db
-        this.registerJobExecutionFailureRepository.registerFailure({
-          executionAttemptDatetime: new Date(),
+        await this.registerJobExecutionRepository.registerExecution({
+          executionDatetime: new Date(),
+          executionConsoleOutput: error.stack
+            .replace(/\n|\s{4}/g, '')
+            .replace(/\r/g, ' '),
+          idExecutionResult: EXECUTION_RESULT.FAILED,
           idJob: job.idJob,
+          jobStatus: JOB_STATUS.INTERRUPTED,
         });
       }
     });

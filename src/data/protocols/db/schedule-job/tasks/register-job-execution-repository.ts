@@ -7,6 +7,7 @@ export interface RegisterJobExecutionRepository {
 export namespace RegisterJobExecutionRepository {
   export type Params = {
     executionDatetime: Date;
+    executionConsoleOutput?: string;
     idJob: number;
     idExecutionResult: number;
     jobStatus: number;

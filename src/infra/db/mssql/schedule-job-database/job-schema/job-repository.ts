@@ -81,10 +81,12 @@ export class JobMsSQLRepository
       executionDatetime,
       idJob,
       idExecutionResult,
+      executionConsoleOutput,
     }) => ({
       executionDatetime,
       idJob,
       idExecutionResult,
+      executionConsoleOutput,
     }))(executedJobData);
 
     await connection(JOB_EXECUTION.TABLE)
