@@ -28,6 +28,10 @@ export const SCHEDULE_JOB_DB = {
       table: '[job].[tb_job_status]',
       columns: <const>['id_job_status', 'job_status'],
     }),
+    JOB_EXECUTION_RESULT: builder({
+      table: '[job].[tb_job_execution_result]',
+      columns: <const>['id_execution_result', 'execution_result'],
+    }),
     JOB_EXECUTION: builder({
       table: '[job].[tb_job_execution]',
       columns: <const>[
