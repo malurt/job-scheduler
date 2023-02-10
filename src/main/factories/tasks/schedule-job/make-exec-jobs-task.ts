@@ -18,8 +18,7 @@ export const makeExecJobsTask = (): Task => {
     jobRepository,
     getCronExpressionFromString,
     getCronNextExecutionDate,
-    executeJob,
-    jobRepository
+    executeJob
   );
   return new ExecJobsTask(logger, dbExecJob, makeErrorHandler());
 };

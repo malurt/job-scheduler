@@ -1,5 +1,4 @@
 import {
-  RegisterJobExecutionFailureRepository,
   RegisterJobExecutionRepository,
   RegisterJobNextExecutionRepository,
 } from '@/data/protocols/db';
@@ -18,8 +17,7 @@ export class DbExecJob implements ExecJob {
     private readonly registerJobNextExecutionRepository: RegisterJobNextExecutionRepository,
     private readonly getCronExpression: GetCronExpression,
     private readonly getCronNextExecution: GetCronNextExecution,
-    private readonly executeJob: ExecuteJob,
-    private readonly registerJobExecutionFailureRepository: RegisterJobExecutionFailureRepository
+    private readonly executeJob: ExecuteJob
   ) {}
 
   async exec(jobs: ExecJob.Params): ExecJob.Result {
