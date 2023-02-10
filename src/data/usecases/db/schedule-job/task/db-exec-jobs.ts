@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
   RegisterJobExecutionFailureRepository,
   RegisterJobExecutionRepository,
@@ -60,7 +59,6 @@ export class DbExecJob implements ExecJob {
           });
         }
       } catch (error) {
-        // TODO: Register execution failure on db
         await this.registerJobExecutionRepository.registerExecution({
           executionDatetime: new Date(),
           executionConsoleOutput: error.stack
