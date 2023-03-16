@@ -55,13 +55,13 @@ Que tal [conhecer o projeto](https://github.com/malurt/test_readme#um-pouco-mais
 
 <br></br>
 
-**_5._** A execução das tarefas agendadas acontece automaticamnete. Toda execução é registrada no banco de dados, sendo possível por exemplo, com uma consulta a ele, verificar quais foram interrompidas devido a falhas e quais foram executadas com sucesso.
+**_5._** A execução das tarefas agendadas acontece automaticamente. Toda execução é registrada no banco de dados, sendo possível por exemplo, com uma consulta a ele, verificar quais foram interrompidas devido a falhas e quais foram executadas com sucesso.
 
 <br></br>
 
 ## Variáveis de Ambiente
 
-Abaixo estão listadas as variáveis de ambiente essenciais ao projeto, bem como algunas sugestões de valores para o bom funcionamento do projeto:
+Abaixo estão listadas as variáveis de ambiente essenciais ao projeto, bem como algumas sugestões de valores para o bom funcionamento do projeto:
 
 #### SERVER
 
@@ -157,7 +157,7 @@ Você pode utilizar o Job Scheduler para treinar suas habilidades na programaç�
 
 > # Outros detalhes sobre o Job Scheduler
 
-### - Pincipais Recursos & Tecnologias
+### - Principais Recursos & Tecnologias
 
 - NodeJS
 - TypeScript
